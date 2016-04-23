@@ -36,7 +36,7 @@ Template.flightdata.events({
     }
     console.log(obj);
 
-    Meteor.call('getWeatherData', obj, function(err, res) {
+    Meteor.call('requestDelayPrediction', obj, function(err, res) {
         if (err) DEBUG.log(JSON.stringify(err))
         if (res) DEBUG.log(JSON.stringify(res.data))
     })
