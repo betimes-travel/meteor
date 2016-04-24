@@ -4,15 +4,12 @@
 
 <body>
   <h1>Welcome to beTimes-Travel!</h1>
-
-  {{> authorize}}
+  {{> status}}
   {{> flightdata}}
+  {{> predictionResult}}
   {{> debugExec}}
 </body>
 
-<template name="authorize">
-  <button id="authorize-open-weather" name="button">auth openWeatherApi</button>
-</template>
 
 <template name="flightdata">
   <div class="dataInput" style="width: 400px;">
@@ -25,14 +22,35 @@
 </template>
 
 <template name="debugExec">
-    <div style="position: absolute; right: 10px; top:60px; padding:10px; width: 500px; height: auto; max-height: 800px; font-size: 11px; color: grey;">
-        <div id="clearLogs" style="width: 100%; display: relative; display: block; text-align: center;">
-            clear logs
-        </div>
-        <div>
-            {{#each log}}
-                <pre>{{msg}}</pre>
-            {{/each}}
-        </div>
+  <div style="position: absolute; right: 10px; top:60px; padding:10px; width: 500px; height: auto; max-height: 800px; font-size: 11px; color: grey; border: 1px dotted grey;">
+      <div id="clearLogs" style="width: 100%; display: relative; display: block; text-align: center;">
+          clear logs
+      </div>
+      <div>
+          {{#each log}}
+              <pre>{{msg}}</pre>
+          {{/each}}
+      </div>
+  </div>
+</template>
+
+<template name="status">
+  <div id="status-bar" style="width: 350px; height: 20px; position: relative; background-color: #585858;">
+    <div class="status-progress" style="position: absolute; height: 100%; width: {{progressWidth}}%; background-color: #1a8ed3; transition: width 1s linear;"></div>
+    <span class="progress-level" style="color: white;text-align: center;width: 100%;display: block;z-index: 2;height: 100%;position: absolute;">{{progressLevel}}</span>
+  </div>
+</template>
+
+<template name="predictionResult">
+  {{#if route}}
+    <div style="width: 330px; display: inline-block; padding: 10px; margin-top: 10px; border: 1px solid #1a8ed3; border-radius: 5px;">
+      <div style="font-size: 3em;">{{prediction.status}}</div>
+      <div>Delay: {{format prediction.delay}}</div>
+      <ol>
+        {{#each route}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ol>
     </div>
+  {{/if}}
 </template>

@@ -2,15 +2,20 @@
  * fetch http data and pipe it to the CLIENT ...
  * @return {[type]} [description]
  */
-getFlightData = function(obj) {
-	var flightInfo = FlightModel[obj.flight];
-	
-	flightInfo['GeoCoords'] = [];
-	flightInfo['Waypoints'].forEach(function(e) {
-		flightInfo['GeoCoords'].push( AirportModel[e] );
+getFlightData = function(id, callback) {
+	var flightData = FlightDB.findOne(id) || 0;
+
+	var flightInfo = FlightModel[flightData.flightnumber];
+	var temp = {};
+	_.each(flightInfo['waypoints'], function(e, i) {	
+		temp[i] = AirportModel[e];
 	});
 	
-	writeLog(JSON.stringify(flightInfo));
+	writeLog('flight data processed');
 	
-	return flightInfo;
+	Meteor.setTimeout(function() {
+		updateStatus(id, 'flight data fetched', 30);
+	}, 2000);
+
+	return getWeatherData(id, callback);
 }

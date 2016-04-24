@@ -1,4 +1,4 @@
-var openWeatherAPI = { token : "b5a7c93c2bc392c46082491927f6825e" };
+var id;
 
 Meteor.methods({
 	
@@ -8,17 +8,29 @@ Meteor.methods({
 	 */
 	requestDelayPrediction: function(obj) {
 		
-		writeLog(JSON.stringify(AirportModel[obj.location.start]));
-		writeLog(AirportModel[obj.location.start].lat + ' | ' + AirportModel[obj.location.start].lon);
-		
-		dataCollectionManager.getData(obj);
+		id = obj._id;
 
-		var convertAsyncToSync  = Meteor.wrapAsync( HTTP.get ),
-		    resultOfAsyncToSync = convertAsyncToSync( 
-		    	'http://api.openweathermap.org/data/2.5/weather?lat=' 
-		    	+ AirportModel[obj.location.start].lat 
-		    	+ '&lon=' + AirportModel[obj.location.start].lon 
-		    	+ '&appid=' + openWeatherAPI.token);
+		if (!FlightDB.findOne(id))
+			FlightDB.insert(obj);
+	
+		// callback hell ;)
+		dataCollectionManager.getData(id, callPredictionAlgorithm);
+	},
+
+	clearFlightDB: function() {
+		FlightDB.remove({});
 	}
 	
 })
+
+updateStatus = function(id, msg, val) {
+	var status = {level: msg, width: val};
+	FlightDB.update({_id: id}, {$set: {status: status}});
+}
+
+callPredictionAlgorithm = function(id) {
+	Meteor.setTimeout( function() {
+			FlightDB.update(id, {$push: {prediction: Predictor.doSmth(id)}});
+			updateStatus(id, 'flight delay calculation done', 100);
+		}, 5000);
+}

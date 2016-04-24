@@ -1,7 +1,7 @@
 DEBUG = {
     log: function(msg) {
     
-        DebugData.insert({msg: 'client LOG - START'});
+        // DebugData.insert({msg: 'client LOG - START'});
         if (typeof Array === msg) {
             _.each(msg, function(ele, i) {
                 DebugData.insert({msg: ele});
@@ -10,7 +10,7 @@ DEBUG = {
             DebugData.insert({msg: msg});  
         }
 //        DebugData.insert({msg: '---'});  
-        DebugData.insert({msg: 'client LOG - END'});
+        // DebugData.insert({msg: 'client LOG - END'});
     },
     
     entries: function() {
