@@ -1,5 +1,6 @@
 dataCollectionManager = {
-	getData : function(obj){
+	getData : function(flightid){
 		var flightInfo = getFlightData(obj);
+		var weatherInfo = getWeatherData(flightInfo);
 	}
 }

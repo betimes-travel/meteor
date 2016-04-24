@@ -6,12 +6,25 @@ Meteor.methods({
 	 * fetch http data and pipe it to the CLIENT ...
 	 * @return {[type]} [description]
 	 */
-	requestDelayPrediction: function(obj) {
+	requestDelayPrediction : function(obj) {
 		
 		writeLog(JSON.stringify(AirportModel[obj.location.start]));
 		writeLog(AirportModel[obj.location.start].lat + ' | ' + AirportModel[obj.location.start].lon);
 		
-		dataCollectionManager.getData(obj);
+		var flightId = obj.flight-number;
+		
+		collection.update(
+			{ flightId	: flightId},
+			{ $set : {
+					flightId		: flightId,
+					startLocation	: obj.location.start,
+					endLocation		: obj.location.end,
+					startDate		: obj.date.start
+				}
+			}
+		);
+		
+		dataCollectionManager.getData(flightId);
 
 		var convertAsyncToSync  = Meteor.wrapAsync( HTTP.get ),
 		    resultOfAsyncToSync = convertAsyncToSync( 
